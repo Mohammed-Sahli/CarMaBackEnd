@@ -41,6 +41,14 @@ Vehicule.init(
             autoIncrement: true,
             primaryKey: true,
         },
+        utilisateur_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'utilisateurs',
+                key: 'id',
+            }, 
+        },
         immat: {
             type: DataTypes.STRING(10),
             allowNull: false,
@@ -94,14 +102,6 @@ Vehicule.init(
                     }
                 }
             },
-        },
-       utilisateur_id: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                model: 'utilisateurs',
-                key: 'id',
-            }, 
         },
     },
     {

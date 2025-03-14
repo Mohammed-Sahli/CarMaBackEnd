@@ -33,20 +33,20 @@ Utilisateur.init(
             primaryKey: true,
         },
         nom: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(50),
             allowNull: false,
         },
         prenom: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(50),
             allowNull: false,
         },
         email: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(50),
             allowNull: false,
             unique: true,
         },
         telephone: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(10),
             allowNull: false,
         },
         mot_de_passe: {
