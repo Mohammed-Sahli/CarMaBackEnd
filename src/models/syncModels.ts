@@ -1,5 +1,10 @@
 import sequelize from "../config/database";
+import Assurance from "./assuraneModels";
+import Consommable from "./consommableModels";
+import Controle from "./controleTechniqueModels";
+import Entrerep from "./entrerepModels";
 import Utilisateur from "./utilisateurModels";
+import Vehicule from "./vehiculeModels";
 
 const syncDatabase = async () => {
     
@@ -14,4 +19,4 @@ try {
     }
 };
    
-export { syncDatabase, Utilisateur };
+export { syncDatabase, Utilisateur, Vehicule, Assurance, Controle, Consommable, Entrerep };
