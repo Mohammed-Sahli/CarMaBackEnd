@@ -80,7 +80,7 @@ Vehicule.init(
             allowNull: false,
         },
         prix_achat: {
-            type: DataTypes.DECIMAL(6, 2),
+            type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             defaultValue: 0.00,
             validate: {min: 0.00},
@@ -93,11 +93,11 @@ Vehicule.init(
         },
         dernier_kilometrage: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             defaultValue: 0,
             validate: {
                 isGreaterThanKilometrageAchat(value: number) {
-                    if (value < ((this as unknown) as Vehicule).kilometrage_achat) {
+                    if (value < ((this as unknown) as Vehicule).kilometrage_achat && value) {
                         throw new Error("Ce kilométrage doit être supérieur à celui de l'achat !");
                     }
                 }
@@ -108,6 +108,11 @@ Vehicule.init(
         sequelize,
         tableName: "vehicules",
         timestamps: true,
+        hooks: {
+            beforeCreate: (vehicule) => {
+                vehicule.dernier_kilometrage = vehicule.kilometrage_achat;
+            }
+        }
     }
 );
 

@@ -4,6 +4,10 @@ import { generateToken } from "../utils/JWTUtils";
 import sequelize from "../config/database";
 import { Utilisateur } from "../models/syncModels";
 
+//===================================================
+// ATTENTION : AJOUTER LES CONTROLES SUR LES CHAMPS
+//===================================================
+
 export async function register(req: Request, res: Response) {
     try {
         // Champs requis

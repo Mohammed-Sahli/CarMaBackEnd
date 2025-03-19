@@ -43,7 +43,7 @@ Entrerep.init(
             },
         },
         type_entrerep: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(50),
             allowNull: false,
         },
         date_entrerep: {
@@ -55,7 +55,7 @@ Entrerep.init(
             allowNull: false,
         },
         cout: {
-            type: DataTypes.DECIMAL(6, 2),
+            type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             defaultValue: 0.00,
             validate: {min: 0.00},

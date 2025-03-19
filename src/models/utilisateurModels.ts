@@ -47,7 +47,7 @@ Utilisateur.init(
         },
         telephone: {
             type: DataTypes.STRING(10),
-            allowNull: false,
+            allowNull: true,
         },
         mot_de_passe: {
             type: DataTypes.STRING,
