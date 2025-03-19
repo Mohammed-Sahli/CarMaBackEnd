@@ -4,6 +4,7 @@ import { testConnection } from './config/database';
 import { syncDatabase } from './models/syncModels';
 import userRoutes from './routes/userRoutes';
 import vehiculeRoutes from './routes/vehiculeRoutes';
+import entrerepRoutes from './routes/entrerepRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocs from './config/swagger';
 
@@ -28,6 +29,7 @@ app.use(express.json());
 //TODO ajouter ici les routes
 app.use('/auth', userRoutes)
 app.use('/v', vehiculeRoutes)
+app.use('/e', entrerepRoutes)
 
 //Swagger route
 // Swagger route
