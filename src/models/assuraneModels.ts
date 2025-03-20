@@ -49,6 +49,7 @@ Assurance.init(
         numero_police: {
             type: DataTypes.STRING(50),
             allowNull: false,
+            unique: true,
         },
         type_assurance: {
             type: DataTypes.STRING(50),

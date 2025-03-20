@@ -8,7 +8,7 @@ const router = express.Router()
  * /auth/register:
  *   post:
  *     summary: Inscription d'un nouvel utilisateur
- *     tags: [Auth]
+ *     tags: [01-Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -45,7 +45,7 @@ router.post("/register", register);
  * /auth/login:
  *   post:
  *     summary: Connexion utilisateur
- *     tags: [Auth]
+ *     tags: [01-Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -77,10 +77,9 @@ router.post("/login", login);
 /**
  * @swagger
  * /auth/update:
- *   post:
+ *   put:
  *     summary: Met à jour un utilisateur existant
- *     tags: 
- *       - Auth
+ *     tags: [01-Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -129,7 +128,7 @@ router.post("/login", login);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/update", updateUser);
+router.put("/update", updateUser);
 
 /**
  * @swagger
@@ -137,8 +136,7 @@ router.post("/update", updateUser);
  *   post:
  *     summary: Supprimer un utilisateur par son adresse e-mail
  *     description: Cette route permet de supprimer un utilisateur en fonction de son adresse e-mail. Si l'utilisateur est trouvé, il sera supprimé de la base de données.
- *     tags: 
- *       - Auth
+ *     tags: [01-Utilisateurs]
  *     parameters:
  *       - in: path
  *         name: email
@@ -189,7 +187,7 @@ router.post("/delete/:email", deleteUser);
  * /auth/list:
  *   get:
  *     summary: Liste de tous les utilisateurs
- *     tags: [Auth]
+ *     tags: [01-Utilisateurs]
  *     responses:
  *       200:
  *         description: Liste des utilisateurs récupérée avec succès
@@ -220,7 +218,7 @@ router.get("/list", getAllUsers);
  * /auth/logout:
  *   post:
  *     summary: Déconnexion utilisateur
- *     tags: [Auth]
+ *     tags: [01-Utilisateurs]
  *     responses:
  *       200:
  *         description: Déconnexion réussie

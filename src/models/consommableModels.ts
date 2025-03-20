@@ -23,6 +23,7 @@ class Consommable extends Model<ConsommableAttributes> implements ConsommableAtt
     public kilometrage_achat!: number;
     public quantite!: number;
     public cout!: number;
+    public observation!: string;
 }
 
 // Initialisation du modèle Consommable et création dans la BDD
