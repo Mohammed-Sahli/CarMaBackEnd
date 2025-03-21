@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { hashPassword, verifyPassword } from "../utils/pwdUtils";
 import { generateToken } from "../utils/JWTUtils";
-import sequelize from "../config/database";
 import { Utilisateur } from "../models/syncModels";
 
 //===================================================
@@ -15,7 +14,7 @@ export async function register(req: Request, res: Response) {
 
         // Vérification des champs obligatoires
             if (!nom || !email || !mot_de_passe) {
-                res.status(400).json({ message: "Les champs nom, email et password sont obligatoires !" });
+                res.status(400).json({ message: "Les champs nom, email et mot de passe sont obligatoires !" });
                 return
             }
 
@@ -93,11 +92,11 @@ export async function login(req: Request, res: Response) {
 } 
 
 export async function updateUser(req: Request, res: Response) {
-    const { email } = req.params;
-    const { nom, prenom, email: newEmail, telephone, mot_de_passe } = req.body;
+    const { id } = req.params;
+    const { nom, prenom, email, telephone, mot_de_passe } = req.body;
 
     try {
-        const user = await Utilisateur.findByPk(email);
+        const user = await Utilisateur.findByPk(id);
         if (!user) {
             res.status(404).json({ message: "Utilisateur non trouvé" });
             return 
@@ -105,7 +104,7 @@ export async function updateUser(req: Request, res: Response) {
 
         const hashedPassword = mot_de_passe ? await hashPassword(mot_de_passe) : user.mot_de_passe;
         
-        await user.update({ nom, prenom, email: newEmail, telephone, mot_de_passe: hashedPassword });
+        await user.update({ nom, prenom, email, telephone, mot_de_passe: hashedPassword });
 
         res.status(200).json({ message: "Utilisateur mis à jour avec succès" });
     } catch (error) {
@@ -114,10 +113,10 @@ export async function updateUser(req: Request, res: Response) {
 }
 
 export async function deleteUser(req: Request, res: Response) {
-    const { email } = req.params;
+    const { id } = req.params;
 
     try {
-        const user = await Utilisateur.findOne({ where: { email } });
+        const user = await Utilisateur.findByPk(id);
         if (!user) {
             res.status(404).json({ message: "Utilisateur non trouvé" });
             return 
@@ -138,8 +137,6 @@ export const getAllUsers = async (req: Request, res: Response) => {
       res.status(500).json({ message: "Erreur serveur", error });
     }
   };
-
-
 
 export async function logout(req: Request, res: Response) {
     res.clearCookie("jwt");

@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login, logout, getAllUsers, updateUser, deleteUser } from "../controllers/userAuthControllers";
+import { register, login, logout, updateUser, deleteUser, getAllUsers } from "../controllers/userAuthControllers";
 
 const router = express.Router()
 
@@ -8,7 +8,7 @@ const router = express.Router()
  * /auth/register:
  *   post:
  *     summary: Inscription d'un nouvel utilisateur
- *     tags: [01-Utilisateurs]
+ *     tags: [Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -26,6 +26,7 @@ const router = express.Router()
  *                 type: string
  *               email:
  *                 type: string
+ *                 format: email
  *               telephone:
  *                 type: string
  *               mot_de_passe:
@@ -44,8 +45,8 @@ router.post("/register", register);
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Connexion utilisateur
- *     tags: [01-Utilisateurs]
+ *     summary: Connexion d'un utilisateur
+ *     tags: [Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -58,6 +59,7 @@ router.post("/register", register);
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
  *               password:
  *                 type: string
  *     responses:
@@ -78,8 +80,8 @@ router.post("/login", login);
  * @swagger
  * /auth/update:
  *   put:
- *     summary: Met à jour un utilisateur existant
- *     tags: [01-Utilisateurs]
+ *     summary: Mise à jour d'un utilisateur
+ *     tags: [Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -87,127 +89,59 @@ router.post("/login", login);
  *           schema:
  *             type: object
  *             properties:
- *               id:
- *                 type: integer
- *                 description: ID de l'utilisateur à mettre à jour
- *                 example: 1
  *               nom:
  *                 type: string
- *                 description: Nouveau nom de l'utilisateur
- *                 example: Dupont
  *               prenom:
  *                 type: string
- *                 description: Nouveau prénom de l'utilisateur
- *                 example: Jean
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Nouvel email de l'utilisateur
- *                 example: jean.dupont@example.com
  *               telephone:
  *                 type: string
- *                 description: Nouveau numéro de téléphone de l'utilisateur
- *                 example: "+33123456789"
  *               mot_de_passe:
  *                 type: string
- *                 description: Nouveau mot de passe (optionnel)
- *                 example: "NouveauMotDePasse123!"
  *     responses:
  *       200:
  *         description: Utilisateur mis à jour avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Utilisateur mis à jour avec succès"
  *       404:
  *         description: Utilisateur non trouvé
  *       500:
- *         description: Erreur serveur
+ *         description: Erreur interne du serveur
  */
-router.put("/update", updateUser);
+router.put("/update/:id", updateUser);
 
 /**
  * @swagger
  * /auth/delete/{email}:
- *   post:
- *     summary: Supprimer un utilisateur par son adresse e-mail
- *     description: Cette route permet de supprimer un utilisateur en fonction de son adresse e-mail. Si l'utilisateur est trouvé, il sera supprimé de la base de données.
- *     tags: [01-Utilisateurs]
+ *   delete:
+ *     summary: Suppression d'un utilisateur
+ *     tags: [Utilisateurs]
  *     parameters:
  *       - in: path
  *         name: email
  *         required: true
- *         description: L'adresse e-mail de l'utilisateur à supprimer
  *         schema:
  *           type: string
  *           format: email
  *     responses:
  *       200:
- *         description: L'utilisateur a été supprimé avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Utilisateur supprimé avec succès"
+ *         description: Utilisateur supprimé avec succès
  *       404:
- *         description: L'utilisateur avec l'adresse e-mail fournie n'a pas été trouvé
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Utilisateur non trouvé"
+ *         description: Utilisateur non trouvé
  *       500:
- *         description: Une erreur serveur s'est produite
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Erreur serveur"
- *                 error:
- *                   type: object
- *                   description: Détails de l'erreur
+ *         description: Erreur interne du serveur
  */
-router.post("/delete/:email", deleteUser);
+router.delete("/delete/:id", deleteUser);
 
 /**
  * @swagger
  * /auth/list:
  *   get:
- *     summary: Liste de tous les utilisateurs
- *     tags: [01-Utilisateurs]
+ *     summary: Récupération de la liste des utilisateurs
+ *     tags: [Utilisateurs]
  *     responses:
  *       200:
- *         description: Liste des utilisateurs récupérée avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   nom:
- *                     type: string
- *                   prenom:
- *                     type: string
- *                   email:
- *                     type: string
- *                   telephone:
- *                     type: string
+ *         description: Liste des utilisateurs
  *       500:
  *         description: Erreur interne du serveur
  */
@@ -217,8 +151,8 @@ router.get("/list", getAllUsers);
  * @swagger
  * /auth/logout:
  *   post:
- *     summary: Déconnexion utilisateur
- *     tags: [01-Utilisateurs]
+ *     summary: Déconnexion de l'utilisateur
+ *     tags: [Utilisateurs]
  *     responses:
  *       200:
  *         description: Déconnexion réussie

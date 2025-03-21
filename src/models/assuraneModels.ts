@@ -74,6 +74,15 @@ Assurance.init(
         sequelize,
         tableName: "assurances",
         timestamps: true,
+        hooks: {
+            beforeCreate: (assurance) => {
+                if (!assurance.date_fin && assurance.date_debut) {
+                    const dateDebut = new Date(assurance.date_debut);
+                    dateDebut.setFullYear(dateDebut.getFullYear() + 1);
+                    assurance.date_fin = dateDebut;
+                }
+            },
+        },
     }
 );
 

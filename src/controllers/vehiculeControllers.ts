@@ -16,6 +16,10 @@ export async function createVehicule(req: Request, res: Response) {
                 return
             }
 
+        // ==================================================================================
+        //  Ajouter controle sur l'existence de l'utilisateur_id dans la table utilisateur
+        // ==================================================================================
+
         // Création d'un nouveau véhicule en Sequelize
         const newVehicule = await Vehicule.create({
             immat,
@@ -68,7 +72,7 @@ export async function deleteVehicule(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
-        const vehicule = await Vehicule.findOne({ where: { id } });
+        const vehicule = await Vehicule.findByPk(id);
         if (!vehicule) {
             res.status(404).json({ message: "Véhicule non trouvé !" });
             return 

@@ -1,86 +1,87 @@
+import { Request, Response } from "express";
+import Consommable from "../models/consommableModels";
 
+//===================================================
+// ATTENTION : AJOUTER LES CONTROLES SUR LES CHAMPS
+//===================================================
 
-// //===================================================
-// // ATTENTION : AJOUTER LES CONTROLES SUR LES CHAMPS
-// //===================================================
+export async function createConsommable(req: Request, res: Response) {
+    try {
+        // Champs requis
+        const { vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, observation } = req.body;
 
-// export async function createConsommable(req: Request, res: Response) {
-//     try {
-//         // Champs requis
-//         const { vehicule_id, type_consommable, date_achat, kilometrage, quantite, cout, observation } = req.body;
+        // Vérification des champs obligatoires
+            if (!vehicule_id) {
+                res.status(400).json({ message: "Le champs Id du véhicule est obligatoire !" });
+                return
+            }
 
-//         // Vérification des champs obligatoires
-//             if (!vehicule_id) {
-//                 res.status(400).json({ message: "Le champs Id du véhicule est obligatoire !" });
-//                 return
-//             }
+        // Création d'un nouveau consommable
+        const newconsommable = await Consommable.create({
+            vehicule_id,
+            type_consommable,
+            date_achat,
+            kilometrage_achat,
+            quantite,
+            cout,
+            observation                    
+        });
 
-//         // Création d'un nouveau consommable
-//         const newconsommablee = await Consommable.create({
-//             vehicule_id,
-//             type_consommable,
-//             date_achat,
-//             kilometrage,
-//             quantite,
-
-                   
-//         });
-
-//         const assuranceResponse = newAssurance;
-//         res.status(200).json({message:'Contrat d\'assurance créé avec succès !', assuranceResponse});
+        const consommableResponse = newconsommable;
+        res.status(200).json({message:'Consommable créé avec succès !', consommableResponse});
              
-//         } catch (err: any) {
-//             console.log(err.message);
-//             if (err.name === "SequelizeUniqueConstraintError") {
-//                  res.status(400).json({ message: "Erreur Erreur Erreur !!!" });
-//                 return
-//             }
-//         console.error("Erreur lors de l'ajout :", err);
-//         res.status(500).json({ message: "Erreur interne du serveur." });
-//     }
-// }
+        } catch (err: any) {
+            console.log(err.message);
+            if (err.name === "SequelizeUniqueConstraintError") {
+                 res.status(400).json({ message: "Erreur Erreur Erreur !!!" });
+                return
+            }
+        console.error("Erreur lors de l'ajout :", err);
+        res.status(500).json({ message: "Erreur interne du serveur." });
+    }
+}
 
-// export async function updateAssurance (req: Request, res: Response) {
-//     const { id } = req.params;
-//     const { vehicule_id, assureur, numero_police, type_assurance, date_debut, date_fin, cout_annuel } = req.body;
+export async function updateConsommable (req: Request, res: Response) {
+    const { id } = req.params;
+    const { vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, observation } = req.body;
 
-//     try {
-//         const assurance = await Assurance.findByPk(id);
-//         if (!assurance) {
-//             res.status(404).json({ message: "Contrat d\'assurance non trouvé !" });
-//             return 
-//         }
+    try {
+        const consommable = await Consommable.findByPk(id);
+        if (!consommable) {
+            res.status(404).json({ message: "Consommable non trouvé !" });
+            return 
+        }
         
-//         await assurance.update({ vehicule_id, assureur, numero_police, type_assurance, date_debut, date_fin, cout_annuel });
-//         res.status(200).json({ message: "Contrat d\'assurance mis à jour avec succès !" });
+        await consommable.update({ vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, observation });
+        res.status(200).json({ message: "Consommable mis à jour avec succès !" });
+        
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error });
+    }
+}
 
-//     } catch (error) {
-//         res.status(500).json({ message: "Erreur serveur", error });
-//     }
-// }
+export async function deleteConsommable(req: Request, res: Response) {
+    const { id } = req.params;
 
-// export async function deleteAssurance(req: Request, res: Response) {
-//     const { id } = req.params;
+    try {
+        const consommable = await Consommable.findOne({ where: { id } });
+        if (!consommable) {
+            res.status(404).json({ message: "Consommable non trouvé !" });
+            return 
+        }
 
-//     try {
-//         const assurance = await Assurance.findOne({ where: { id } });
-//         if (!assurance) {
-//             res.status(404).json({ message: "Contrat d\'assurance non trouvé !" });
-//             return 
-//         }
+        await consommable.destroy();
+        res.status(200).json({ message: "Consommable supprimé avec succès !" });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error });
+    }
+}
 
-//         await assurance.destroy();
-//         res.status(200).json({ message: "Contrat d\'assurance supprimé avec succès !" });
-//     } catch (error) {
-//         res.status(500).json({ message: "Erreur serveur", error });
-//     }
-// }
-
-// export const getAllAssurance = async (req: Request, res: Response) => {
-//     try {
-//       const assurances = await Assurance.findAll(); // Exemple avec Sequelize
-//       res.status(200).json(assurances);
-//     } catch (error) {
-//       res.status(500).json({ message: "Erreur serveur", error });
-//     }
-//   };
+export const getAllConsommable = async (req: Request, res: Response) => {
+    try {
+      const consommables = await Consommable.findAll(); // Exemple avec Sequelize
+      res.status(200).json(consommables);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur serveur", error });
+    }
+  };

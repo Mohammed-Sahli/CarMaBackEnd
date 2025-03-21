@@ -46,7 +46,7 @@ Utilisateur.init(
             unique: true,
         },
         telephone: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(20),
             allowNull: true,
         },
         mot_de_passe: {

@@ -8,7 +8,7 @@ const router = express.Router()
  * /v/create:
  *   post:
  *     summary: Créer un nouveau véhicule
- *     tags: [02-Véhicules]
+ *     tags: [Véhicules]
  *     requestBody:
  *       required: true
  *       content:
@@ -55,9 +55,9 @@ router.post("/create", createVehicule);
 /**
  * @swagger
  * /v/update/{id}:
- *   put:
+ *   post:
  *     summary: Mettre à jour un véhicule
- *     tags: [02-Véhicules]
+ *     tags: [Véhicules]
  *     parameters:
  *       - in: path
  *         name: id
@@ -88,14 +88,14 @@ router.post("/create", createVehicule);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/update/:id", updateVehicule);
+router.post("/update/:id", updateVehicule);
 
 /**
  * @swagger
  * /v/delete/{id}:
  *   post:
  *     summary: Supprimer un véhicule
- *     tags: [02-Véhicules]
+ *     tags: [Véhicules]
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,7 +117,7 @@ router.post("/delete/:id", deleteVehicule);
  * /v/list:
  *   get:
  *     summary: Récupérer la liste des véhicules
- *     tags: [02-Véhicules]
+ *     tags: [Véhicules]
  *     responses:
  *       200:
  *         description: Liste des véhicules récupérée avec succès

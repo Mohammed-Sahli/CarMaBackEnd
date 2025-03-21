@@ -5,10 +5,10 @@ const router = express.Router()
 
 /**
  * @swagger
- * /create:
+ * /e/create:
  *   post:
  *     summary: Créer un nouvel entretien/réparation
- *     tags: [04-Entretiens/Réparations]
+ *     tags: [Entretiens/Réparations]
  *     requestBody:
  *       required: true
  *       content:
@@ -46,10 +46,10 @@ router.post("/create", createEntrerep);
 
 /**
  * @swagger
- * /update:
+ * /e/update:
  *   put:
  *     summary: Mettre à jour un entretien/réparation
- *     tags: [04-Entretiens/Réparations]
+ *     tags: [Entretiens/Réparations]
  *     parameters:
  *       - in: path
  *         name: id
@@ -86,14 +86,14 @@ router.post("/create", createEntrerep);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/update", updateEntrerep);
+router.put("/update/:id", updateEntrerep);
 
 /**
  * @swagger
- * /delete:
+ * /e/delete:
  *   post:
  *     summary: Supprimer un entretien/réparation
- *     tags: [04-Entretiens/Réparations]
+ *     tags: [Entretiens/Réparations]
  *     parameters:
  *       - in: path
  *         name: id
@@ -108,14 +108,14 @@ router.put("/update", updateEntrerep);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/delete", deleteEntrerep);
+router.delete("/delete/:id", deleteEntrerep);
 
 /**
  * @swagger
- * /list:
+ * /e/list:
  *   get:
  *     summary: Récupérer la liste des entretiens/réparations
- *     tags: [04-Entretiens/Réparations]
+ *     tags: [Entretiens/Réparations]
  *     responses:
  *       200:
  *         description: Liste des entretiens/réparations retournée avec succès

@@ -7,10 +7,12 @@ interface ControleAttributes {
     id?: number;
     vehicule_id?: number;
     date_controle?: Date;
+    kilometrage_controle?: number;
     controleur?: string;
     resultat?: string;
     cout?: number;
     prochain_controle?: Date;
+    observation?: string;
     }
 
 // Définition de la classe Controle Technique
@@ -18,10 +20,12 @@ class Controle extends Model<ControleAttributes> implements ControleAttributes {
     public id!: number;
     public vehicule_id!: number;
     public date_controle!: Date;
+    public kilometrage_controle!: number;
     public controleur!: string;
     public resultat!: string;
     public cout!: number;
     public prochain_controle!: Date;
+    public observation!: string;
     
 }
 
@@ -45,6 +49,10 @@ Controle.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
+        kilometrage_controle: {
+            type: DataTypes.INTEGER,    
+            allowNull: false,
+        },
         controleur:{
             type: DataTypes.STRING(50),
             allowNull: false,
@@ -62,6 +70,10 @@ Controle.init(
         prochain_controle:{
             type: DataTypes.DATE,
             allowNull: false,
+        },
+        observation:{
+            type: DataTypes.STRING(255),
+            allowNull: true,
         },
     },
     {

@@ -1,14 +1,15 @@
 import express from "express";
 import { createAssurance, updateAssurance, deleteAssurance, getAllAssurance } from "../controllers/assuranceControllers";
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * @swagger
- * /create:
+ * /a/create:
  *   post:
  *     summary: Créer un contrat d'assurance
- *     tags: [03-Assurances]
+ *     description: Endpoint pour enregistrer un nouveau contrat d'assurance pour un véhicule.
+ *     tags: [Assurances]
  *     requestBody:
  *       required: true
  *       content:
@@ -18,42 +19,59 @@ const router = express.Router()
  *             properties:
  *               vehicule_id:
  *                 type: integer
+ *                 description: ID du véhicule
  *               assureur:
  *                 type: string
+ *                 description: Nom de l'assureur
  *               numero_police:
  *                 type: string
+ *                 description: Numéro de police d'assurance
  *               type_assurance:
  *                 type: string
+ *                 description: Type de l'assurance
  *               date_debut:
  *                 type: string
  *                 format: date
+ *                 description: Date de début du contrat
  *               date_fin:
  *                 type: string
  *                 format: date
+ *                 description: Date de fin du contrat
  *               cout_annuel:
  *                 type: number
+ *                 format: float
+ *                 description: Coût annuel de l'assurance
  *     responses:
  *       200:
- *         description: Contrat d'assurance créé avec succès
+ *         description: Contrat d'assurance créé avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       400:
- *         description: Champs obligatoires manquants
+ *         description: Erreur dans les données envoyées.
  *       500:
- *         description: Erreur serveur
+ *         description: Erreur interne du serveur.
  */
 router.post("/create", createAssurance);
 
 /**
  * @swagger
- * /update/{id}:
+ * /a/update/{id}:
  *   put:
  *     summary: Mettre à jour un contrat d'assurance
- *     tags: [03-Assurance]
+ *     description: Modifier les détails d'un contrat d'assurance existant.
+ *     tags: [Assurances]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID du contrat d'assurance à mettre à jour
  *     requestBody:
  *       required: true
  *       content:
@@ -61,8 +79,6 @@ router.post("/create", createAssurance);
  *           schema:
  *             type: object
  *             properties:
- *               vehicule_id:
- *                 type: integer
  *               assureur:
  *                 type: string
  *               numero_police:
@@ -77,50 +93,82 @@ router.post("/create", createAssurance);
  *                 format: date
  *               cout_annuel:
  *                 type: number
+ *                 format: float
  *     responses:
  *       200:
- *         description: Contrat d'assurance mis à jour avec succès
+ *         description: Contrat mis à jour avec succès.
+ *       400:
+ *         description: Erreur dans les données envoyées.
  *       404:
- *         description: Contrat non trouvé
+ *         description: Contrat non trouvé.
  *       500:
- *         description: Erreur serveur
+ *         description: Erreur interne du serveur.
  */
 router.put("/update/:id", updateAssurance);
 
 /**
  * @swagger
- * /find/{id}:
- *   get:
- *     summary: Récupérer un contrat d'assurance par son ID
- *     tags: [03-Assurance]
+ * /a/delete/{id}:
+ *   delete:
+ *     summary: Supprimer un contrat d'assurance
+ *     description: Supprime un contrat d'assurance par son ID.
+ *     tags: [Assurances]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID du contrat d'assurance à supprimer
  *     responses:
  *       200:
- *         description: Contrat d'assurance trouvé
+ *         description: Contrat supprimé avec succès.
  *       404:
- *         description: Contrat non trouvé
+ *         description: Contrat non trouvé.
  *       500:
- *         description: Erreur serveur
+ *         description: Erreur interne du serveur.
  */
-router.get("/find/:id", getAllAssurance);
+router.delete("/delete/:id", deleteAssurance);
 
 /**
  * @swagger
- * /list:
+ * /a/all:
  *   get:
  *     summary: Récupérer tous les contrats d'assurance
- *     tags: [03-Assurance]
+ *     description: Retourne une liste de tous les contrats d'assurance enregistrés.
+ *     tags: [Assurances]
  *     responses:
  *       200:
- *         description: Liste des contrats d'assurance
+ *         description: Liste des contrats d'assurance récupérée avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   vehicule_id:
+ *                     type: integer
+ *                   assureur:
+ *                     type: string
+ *                   numero_police:
+ *                     type: string
+ *                   type_assurance:
+ *                     type: string
+ *                   date_debut:
+ *                     type: string
+ *                     format: date
+ *                   date_fin:
+ *                     type: string
+ *                     format: date
+ *                   cout_annuel:
+ *                     type: number
+ *                     format: float
  *       500:
- *         description: Erreur serveur
+ *         description: Erreur interne du serveur.
  */
-router.get("/list", getAllAssurance);
+router.get("/all", getAllAssurance);
 
 export default router;
