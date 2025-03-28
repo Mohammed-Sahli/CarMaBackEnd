@@ -8,6 +8,7 @@ import assuranceRoutes from './routes/assuranceRoutes';
 import consommableRoutes from './routes/consommableRoutes';
 import entrerepRoutes from './routes/entrerepRoutes';
 import controleTechniqueRoutes from './routes/controleTechniqueRoutes';
+import dashBordRoutes from './routes/dashBordRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocs from './config/swagger';
 
@@ -36,8 +37,8 @@ app.use('/a', assuranceRoutes)
 app.use('/ct', controleTechniqueRoutes)
 app.use('/c', consommableRoutes)
 app.use('/e', entrerepRoutes)
+app.use('/d', dashBordRoutes )
 
-//Swagger route
 // Swagger route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

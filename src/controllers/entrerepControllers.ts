@@ -1,5 +1,6 @@
 import Entrerep from "../models/entrerepModels";
 import { Request, Response } from "express";
+import Vehicule from "../models/vehiculeModels";
 
 //===================================================
 // ATTENTION : AJOUTER LES CONTROLES SUR LES CHAMPS
@@ -15,6 +16,12 @@ export async function createEntrerep(req: Request, res: Response) {
                 res.status(400).json({ message: "Le champs Id du véhicule est obligatoire !" });
                 return
             }
+        // Vérification si le véhicule existe
+        const vehicule = await Vehicule.findByPk(vehicule_id);
+        if (!vehicule) {
+            res.status(404).json({ message: "Véhicule non trouvé. Veuillez vérifier l'Id du véhicule !" });
+            return
+        }
 
         // Création d'un nouveau véhicule en Sequelize
         const newEntrerep = await Entrerep.create({
@@ -28,7 +35,7 @@ export async function createEntrerep(req: Request, res: Response) {
         });
 
         const entrerepResponse = newEntrerep;
-        res.status(200).json({message:'L\'entretien/réparation créé avec succès !', entrerepResponse});
+        res.status(200).json({message:'Entretien / réparation créé avec succès !', entrerepResponse});
              
         } catch (err: any) {
             console.log(err.message);
@@ -51,7 +58,8 @@ export async function updateEntrerep(req: Request, res: Response) {
             res.status(404).json({ message: "Entretien/Réparation non trouvé !" });
             return 
         }
-        
+        console.log("=================================")
+
         await entrerep.update({ vehicule_id, type_entrerep, date_entrerep, garage, cout, kilometrage, observation });
         res.status(200).json({ message: "Entretien/Réparation mis à jour avec succès !" });
 
@@ -64,7 +72,7 @@ export async function deleteEntrerep(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
-        const entrerep = await Entrerep.findOne({ where: { id } });
+        const entrerep = await Entrerep.findByPk(id);
         if (!entrerep) {
             res.status(404).json({ message: "Entretein/Réparation non trouvé !" });
             return 

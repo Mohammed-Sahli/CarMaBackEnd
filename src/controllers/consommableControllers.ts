@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Consommable from "../models/consommableModels";
+import Vehicule from "../models/vehiculeModels";
 
 //===================================================
 // ATTENTION : AJOUTER LES CONTROLES SUR LES CHAMPS
@@ -8,13 +9,20 @@ import Consommable from "../models/consommableModels";
 export async function createConsommable(req: Request, res: Response) {
     try {
         // Champs requis
-        const { vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, observation } = req.body;
+        const { vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, facture, observation } = req.body;
 
         // Vérification des champs obligatoires
             if (!vehicule_id) {
                 res.status(400).json({ message: "Le champs Id du véhicule est obligatoire !" });
                 return
             }
+
+        // Vérification si le véhicule existe
+        const vehicule = await Vehicule.findByPk(vehicule_id);
+        if (!vehicule) {
+            res.status(404).json({ message: "Véhicule non trouvé. Veuillez vérifier l'Id du véhicule !" });
+            return
+        }
 
         // Création d'un nouveau consommable
         const newconsommable = await Consommable.create({
@@ -24,6 +32,7 @@ export async function createConsommable(req: Request, res: Response) {
             kilometrage_achat,
             quantite,
             cout,
+            facture,
             observation                    
         });
 
@@ -43,7 +52,7 @@ export async function createConsommable(req: Request, res: Response) {
 
 export async function updateConsommable (req: Request, res: Response) {
     const { id } = req.params;
-    const { vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, observation } = req.body;
+    const { vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, facture, observation } = req.body;
 
     try {
         const consommable = await Consommable.findByPk(id);
@@ -52,7 +61,7 @@ export async function updateConsommable (req: Request, res: Response) {
             return 
         }
         
-        await consommable.update({ vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, observation });
+        await consommable.update({ vehicule_id, type_consommable, date_achat, kilometrage_achat, quantite, cout, facture, observation });
         res.status(200).json({ message: "Consommable mis à jour avec succès !" });
         
     } catch (error) {

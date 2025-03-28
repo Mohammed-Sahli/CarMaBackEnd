@@ -12,8 +12,9 @@ interface ControleAttributes {
     resultat?: string;
     cout?: number;
     prochain_controle?: Date;
+    facture?: Buffer;  // Stocke le fichier PDF sous forme de binaire max 1Mo
     observation?: string;
-    }
+}
 
 // Définition de la classe Controle Technique
 class Controle extends Model<ControleAttributes> implements ControleAttributes {
@@ -25,8 +26,8 @@ class Controle extends Model<ControleAttributes> implements ControleAttributes {
     public resultat!: string;
     public cout!: number;
     public prochain_controle!: Date;
+    public facture!: Buffer;
     public observation!: string;
-    
 }
 
 // Initialisation du modèle Controle Technique et création dans la BDD
@@ -65,11 +66,22 @@ Controle.init(
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             defaultValue: 0.00,
-            validate: {min: 0.00},
+            validate: { min: 0.00 },
         },
         prochain_controle:{
             type: DataTypes.DATE,
             allowNull: false,
+        },
+        facture: {
+            type: DataTypes.BLOB("long"), // Stocke les fichiers binaires
+            allowNull: true,
+            validate: {
+                fileSizeLimit(value: Buffer) {
+                    if (value && value.length > 1048576) { // 1 Mo
+                        throw new Error("Le fichier PDF ne doit pas dépasser 1 Mo.");
+                    }
+                },
+            },
         },
         observation:{
             type: DataTypes.STRING(255),
@@ -84,4 +96,3 @@ Controle.init(
 );
 
 export default Controle;
-

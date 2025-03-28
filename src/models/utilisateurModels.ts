@@ -7,6 +7,7 @@ interface UtilisateurAttributes {
     id?: number;
     nom?: string;
     prenom?: string;
+    role?: string;
     email?: string;
     telephone?: string;
     mot_de_passe?: string;
@@ -18,6 +19,7 @@ class Utilisateur extends Model<UtilisateurAttributes> implements UtilisateurAtt
     public id!: number;
     public nom!: string;
     public prenom!: string;
+    public role!: string;
     public email!: string;
     public telephone!: string;
     public mot_de_passe!: string;
@@ -39,6 +41,11 @@ Utilisateur.init(
         prenom: {
             type: DataTypes.STRING(50),
             allowNull: false,
+        },
+        role: {
+            type: DataTypes.STRING(10),
+            allowNull: false,
+            defaultValue: "user",
         },
         email: {
             type: DataTypes.STRING(50),

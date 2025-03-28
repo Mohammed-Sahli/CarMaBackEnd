@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Controle from "../models/controleTechniqueModels";
+import Vehicule from "../models/vehiculeModels";
 
 //===================================================
 // ATTENTION : AJOUTER LES CONTROLES SUR LES CHAMPS
@@ -15,7 +16,12 @@ export async function createControle(req: Request, res: Response) {
                 res.status(400).json({ message: "Le champs Id du véhicule est obligatoire !" });
                 return
             }
-
+        // Vérification si le véhicule existe
+        const vehicule = await Vehicule.findByPk(vehicule_id);
+        if (!vehicule) {
+            res.status(404).json({ message: "Véhicule non trouvé. Veuillez vérifier l'Id du véhicule !" });
+            return
+        }
         // Création d'un nouveau contrôle technique
         const newControle = await Controle.create({
             vehicule_id,

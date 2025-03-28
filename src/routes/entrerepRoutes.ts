@@ -46,14 +46,16 @@ router.post("/create", createEntrerep);
 
 /**
  * @swagger
- * /e/update:
+ * /e/update/{id}:
  *   put:
- *     summary: Mettre à jour un entretien/réparation
+ *     summary: Met à jour une entrée d'entretien ou de réparation
+ *     description: Met à jour les informations d'une entrée d'entretien/réparation avec l'ID spécifié.
  *     tags: [Entretiens/Réparations]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID de l'entrée d'entretien/réparation à mettre à jour
  *         schema:
  *           type: integer
  *     requestBody:
@@ -65,33 +67,73 @@ router.post("/create", createEntrerep);
  *             properties:
  *               vehicule_id:
  *                 type: integer
+ *                 description: ID du véhicule concerné
+ *                 example: 123
  *               type_entrerep:
  *                 type: string
+ *                 description: Type d'entretien ou réparation
+ *                 example: "Vidange"
  *               date_entrerep:
  *                 type: string
  *                 format: date
+ *                 description: Date de l'intervention
+ *                 example: "2025-03-20"
  *               garage:
  *                 type: string
+ *                 description: Nom du garage
+ *                 example: "Garage Auto Service"
  *               cout:
  *                 type: number
+ *                 description: Coût de l'intervention
+ *                 example: 250.50
  *               kilometrage:
  *                 type: integer
+ *                 description: Kilométrage du véhicule lors de l'intervention
+ *                 example: 50000
  *               observation:
  *                 type: string
+ *                 description: Observations éventuelles
+ *                 example: "Changement du filtre à huile"
  *     responses:
  *       200:
- *         description: Entretien/Réparation mis à jour avec succès
+ *         description: Entrée d'entretien/réparation mise à jour avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Entretien/Réparation mis à jour avec succès !"
  *       404:
- *         description: Entretien/Réparation non trouvé
+ *         description: Entrée d'entretien/réparation non trouvée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Entretien/Réparation non trouvé !"
  *       500:
  *         description: Erreur serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Erreur serveur"
+ *                 error:
+ *                   type: string
  */
 router.put("/update/:id", updateEntrerep);
 
 /**
  * @swagger
- * /e/delete:
- *   post:
+ * /e/delete/{id}:
+ *   delete:
  *     summary: Supprimer un entretien/réparation
  *     tags: [Entretiens/Réparations]
  *     parameters:

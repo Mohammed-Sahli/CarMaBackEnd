@@ -94,11 +94,11 @@ export async function login(req: Request, res: Response) {
 export async function updateUser(req: Request, res: Response) {
     const { id } = req.params;
     const { nom, prenom, email, telephone, mot_de_passe } = req.body;
-
+    
     try {
         const user = await Utilisateur.findByPk(id);
         if (!user) {
-            res.status(404).json({ message: "Utilisateur non trouvé" });
+            res.status(404).json({ message: "Utilisateur non trouvé !" });
             return 
         }
 
@@ -118,7 +118,7 @@ export async function deleteUser(req: Request, res: Response) {
     try {
         const user = await Utilisateur.findByPk(id);
         if (!user) {
-            res.status(404).json({ message: "Utilisateur non trouvé" });
+            res.status(404).json({ message: "Utilisateur non trouvé !" });
             return 
         }
 

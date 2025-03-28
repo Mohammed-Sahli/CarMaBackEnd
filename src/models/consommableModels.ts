@@ -1,8 +1,7 @@
 import { Sequelize, DataTypes, Model } from "sequelize";
-import sequelize from "../config/database"; // Adjust the path to your database configuration file
+import sequelize from "../config/database"; 
 
-
-// Définition des attributs d'un Consommables
+// Définition des attributs d'un Consommable
 interface ConsommableAttributes {
     id?: number;
     vehicule_id?: number;
@@ -11,8 +10,9 @@ interface ConsommableAttributes {
     kilometrage_achat?: number;
     quantite?: number;
     cout?: number;
+    facture?: Buffer;  // Stocke le fichier PDF sous forme de binaire max 1Mo
     observation?: string;
-    }
+}
 
 // Définition de la classe Consommable
 class Consommable extends Model<ConsommableAttributes> implements ConsommableAttributes {
@@ -23,7 +23,9 @@ class Consommable extends Model<ConsommableAttributes> implements ConsommableAtt
     public kilometrage_achat!: number;
     public quantite!: number;
     public cout!: number;
+    public facture!: Buffer; 
     public observation!: string;
+
 }
 
 // Initialisation du modèle Consommable et création dans la BDD
@@ -62,7 +64,18 @@ Consommable.init(
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             defaultValue: 0.00,
-            validate: {min: 0.00},
+            validate: { min: 0.00 },
+        },
+        facture: {
+            type: DataTypes.BLOB("long"), // Stocke les fichiers binaires
+            allowNull: true,
+            validate: {
+                fileSizeLimit(value: Buffer) {
+                    if (value && value.length > 1048576) { // 1 Mo
+                        throw new Error("Le fichier PDF ne doit pas dépasser 1 Mo.");
+                    }
+                },
+            },
         },
         observation: {
             type: DataTypes.STRING,

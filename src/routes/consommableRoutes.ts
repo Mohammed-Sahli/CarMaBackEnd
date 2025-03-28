@@ -8,12 +8,12 @@ const router = express.Router();
  * /c/create:
  *   post:
  *     summary: Créer un nouveau consommable
- *     description: Crée un nouveau consommable pour un véhicule.
+ *     description: Crée un nouveau consommable pour un véhicule, avec une vérification que le véhicule existe. Le champ `facture` permet de télécharger un fichier PDF, JPEG ou JPG de 1 Mo maximum.
  *     tags: [Consommables]
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -43,6 +43,10 @@ const router = express.Router();
  *                 format: float
  *                 description: Le coût du consommable
  *                 example: 49.99
+ *               facture:
+ *                 type: string
+ *                 format: binary
+ *                 description: Le fichier PDF, JPEG ou JPG de la facture (max 1 Mo)
  *               observation:
  *                 type: string
  *                 description: Observations sur le consommable
@@ -68,6 +72,16 @@ const router = express.Router();
  *                 message:
  *                   type: string
  *                   example: "Erreur lors de la création du consommable."
+ *       413:
+ *         description: Fichier trop volumineux (supérieur à 1 Mo)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Le fichier de facture dépasse la taille maximale de 1 Mo."
  *       500:
  *         description: Erreur interne du serveur
  *         content:
@@ -86,7 +100,7 @@ router.post('/create', createConsommable);
  * /c/update/{id}:
  *   put:
  *     summary: Mettre à jour un consommable
- *     description: Met à jour un consommable en utilisant son ID.
+ *     description: Met à jour un consommable en utilisant son ID avec la possibilité de joindre une facture.
  *     tags: [Consommables]
  *     parameters:
  *       - name: id
@@ -99,7 +113,7 @@ router.post('/create', createConsommable);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -129,6 +143,11 @@ router.post('/create', createConsommable);
  *                 format: float
  *                 description: Le coût du consommable
  *                 example: 49.99
+ *               facture:
+ *                 type: string
+ *                 format: binary
+ *                 description: Le fichier de la facture (PDF, JPEG, JPG)
+ *                 example: "facture.pdf"
  *               observation:
  *                 type: string
  *                 description: Observations sur le consommable

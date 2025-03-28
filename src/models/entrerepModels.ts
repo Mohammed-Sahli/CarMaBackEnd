@@ -11,6 +11,7 @@ interface EntrerepAttributes {
     garage?: string;
     cout?: number;
     kilometrage?: number;
+    facture?: Buffer;  // Stocke le fichier PDF sous forme de binaire max 1Mo
     observation?: string;
     }
 
@@ -23,6 +24,7 @@ class Entrerep extends Model<EntrerepAttributes> implements EntrerepAttributes {
     public garage!: string;
     public cout!: number;
     public kilometrage!: number;
+    public facture!: Buffer;
     public observation!: string;
 }
 
@@ -63,6 +65,17 @@ Entrerep.init(
         kilometrage: {
             type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        facture: {
+            type: DataTypes.BLOB("long"), // Stocke les fichiers binaires
+            allowNull: true,
+            validate: {
+                fileSizeLimit(value: Buffer) {
+                    if (value && value.length > 1048576) { // 1 Mo
+                        throw new Error("Le fichier PDF ne doit pas dépasser 1 Mo.");
+                    }
+                },
+            },
         },
         observation: {
             type: DataTypes.STRING,

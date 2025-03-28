@@ -78,10 +78,18 @@ router.post("/login", login);
 
 /**
  * @swagger
- * /auth/update:
+ * /auth/update/{id}:
  *   put:
- *     summary: Mise à jour d'un utilisateur
- *     tags: [Utilisateurs]
+ *     summary: Met à jour un utilisateur existant
+ *     description: Met à jour les informations d'un utilisateur avec l'ID spécifié.
+ *     tags:[Utilisateurs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de l'utilisateur à mettre à jour
+ *         schema:
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -91,22 +99,54 @@ router.post("/login", login);
  *             properties:
  *               nom:
  *                 type: string
+ *                 example: "Dupont"
  *               prenom:
  *                 type: string
+ *                 example: "Jean"
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: "jean.dupont@example.com"
  *               telephone:
  *                 type: string
+ *                 example: "+33612345678"
  *               mot_de_passe:
  *                 type: string
+ *                 description: "Nouveau mot de passe (optionnel)"
+ *                 example: "motdepasse123"
  *     responses:
  *       200:
  *         description: Utilisateur mis à jour avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Utilisateur mis à jour avec succès"
  *       404:
  *         description: Utilisateur non trouvé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Utilisateur non trouvé"
  *       500:
- *         description: Erreur interne du serveur
+ *         description: Erreur serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Erreur serveur"
+ *                 error:
+ *                   type: string
  */
 router.put("/update/:id", updateUser);
 
