@@ -1,120 +1,109 @@
-import { Sequelize, DataTypes, Model } from "sequelize";
-import sequelize from "../config/database"; // Adjust the path to your database configuration file
+import { DataTypes, Model, Optional } from "sequelize";
+import sequelize from "../config/database";
+import Utilisateur from "./utilisateurModels";
 
-
-// Définition des attributs d'un Véhicule
 interface VehiculeAttributes {
-    id?: number;
-    immat?: string;
-    numero_chassis?: string;
-    marque?: string;
-    modele?: string;
-    carburant?: string;
-    dmec?: Date;
-    date_achat?: Date;
-    prix_achat?: number;
-    kilometrage_achat?: number;
-    dernier_kilometrage?: number;
-    utilisateur_id?: number;
-    }
-
-// Définition de la classe Véhicule
-class Vehicule extends Model<VehiculeAttributes> implements VehiculeAttributes {
-    public id!: number;
-    public immat!: string;
-    public marque!: string;
-    public modele!: string;
-    public carburant!: string;
-    public dmec!: Date;
-    public date_achat!: Date;
-    public prix_achat!: number;
-    public kilometrage_achat!: number;
-    public dernier_kilometrage!: number;
-    public readonly date_inscription!: Date;
+  id: number;
+  immat: string;
+  numero_chassis: string;
+  utilisateur_id: number;
+  marque?: string;
+  modele?: string;
+  carburant?: string;
+  dmec?: Date | null;
+  date_achat?: Date | null;
+  prix_achat?: number;
+  kilometrage_achat?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-// Initialisation du modèle Véhicule et création dans la BDD
+type VehiculeCreationAttributes = Optional<VehiculeAttributes, "id">;
+
+class Vehicule extends Model<VehiculeAttributes, VehiculeCreationAttributes>
+  implements VehiculeAttributes {
+  public id!: number;
+  public immat!: string;
+  public numero_chassis!: string;
+  public utilisateur_id!: number;
+  public marque?: string;
+  public modele?: string;
+  public carburant?: string;
+  public dmec?: Date;
+  public date_achat?: Date;
+  public prix_achat?: number;
+  public kilometrage_achat?: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 Vehicule.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-        },
-        utilisateur_id: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                model: 'utilisateurs',
-                key: 'id',
-            }, 
-        },
-        immat: {
-            type: DataTypes.STRING(10),
-            allowNull: false,
-            unique: true,
-        },
-        numero_chassis: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-            unique: true,
-        },
-        marque: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        modele: {
-            type: DataTypes.STRING(50),
-            allowNull: true,
-        },
-        carburant: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        dmec: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        date_achat: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        prix_achat: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false,
-            defaultValue: 0.00,
-            validate: {min: 0.00},
-        },
-        kilometrage_achat: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0,
-            validate: {min: 0},
-        },
-        dernier_kilometrage: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            defaultValue: 0,
-            validate: {
-                isGreaterThanKilometrageAchat(value: number) {
-                    if (value < ((this as unknown) as Vehicule).kilometrage_achat && value) {
-                        throw new Error("Ce kilométrage doit être supérieur à celui de l'achat !");
-                    }
-                }
-            },
-        },
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-        sequelize,
-        tableName: "vehicules",
-        timestamps: true,
-        hooks: {
-            beforeCreate: (vehicule) => {
-                vehicule.dernier_kilometrage = vehicule.kilometrage_achat;
-            }
-        }
-    }
+    immat: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    numero_chassis: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    utilisateur_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    marque: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    modele: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    carburant: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dmec: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    date_achat: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    prix_achat: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      validate: {
+        min: 0, // ✅ ici, min attend un number, pas {}
+      },
+    },
+    kilometrage_achat: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      validate: {
+        min: 0, // ✅ ici aussi
+      },
+    },
+  },
+  {
+    sequelize,
+    tableName: "vehicules",
+    modelName: "Vehicule",
+  }
 );
 
-export default Vehicule;
+// Association : un véhicule appartient à un utilisateur
+Vehicule.belongsTo(Utilisateur, {
+  foreignKey: "utilisateur_id",
+  as: "utilisateur",
+});
 
+export default Vehicule;

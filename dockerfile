@@ -1,23 +1,20 @@
-# Utiliser une image de base
-FROM node:18
+# Utiliser une image Node officielle
+FROM node:22-alpine
 
-# Définir le répertoire de travail
+# Définir le dossier de travail dans le conteneur
 WORKDIR /app
 
-# Copier les fichiers package.json et package-lock.json dans le conteneur
+# Copier uniquement package.json et package-lock.json (ou package-lock.json si tu l'as)
 COPY package*.json ./
 
-# Installer les dépendances
+# Installer les dépendances (toutes, sans --omit=dev)
 RUN npm ci
 
-# Installer nodemon dans l'environnement global
-RUN npm install -g nodemon
-
-# Définir la variable d'environnement par défaut (peut être surchargée au runtime)
-ENV NODE_ENV=production
-
-# Copier le reste des fichiers dans le conteneur
+# Copier tout le contenu du projet dans le conteneur
 COPY . .
 
-# Commande à executer au démarrage du conteneur
-CMD ["npm", "start"]
+# Exposer le port de l'application (adapte selon ton app)
+EXPOSE 3000
+
+# Lancer l'application avec nodemon (si tu veux démarrer en mode dev)
+CMD ["nodemon", "src/index.ts", "--legacy-watch"]

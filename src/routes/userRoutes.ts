@@ -1,14 +1,30 @@
 import express from "express";
-import { register, login, logout, updateUser, deleteUser, getAllUsers } from "../controllers/userAuthControllers";
+import {
+  register,
+  login,
+  logout,
+  update,
+  deleteUser,
+  getAll,
+  getById,
+} from "../controllers/userAuthControllers";
+import authMiddleware from "../middlewares/authMiddleware";
 
-const router = express.Router()
+const router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Gestion des utilisateurs (authentification et administration)
+ */
 
 /**
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Inscription d'un nouvel utilisateur
- *     tags: [Utilisateurs]
+ *     summary: Enregistrement d'un nouvel utilisateur
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -17,8 +33,9 @@ const router = express.Router()
  *             type: object
  *             required:
  *               - nom
+ *               - prenom
  *               - email
- *               - mot_de_passe
+ *               - motDePasse
  *             properties:
  *               nom:
  *                 type: string
@@ -26,18 +43,18 @@ const router = express.Router()
  *                 type: string
  *               email:
  *                 type: string
- *                 format: email
+ *               motDePasse:
+ *                 type: string
  *               telephone:
  *                 type: string
- *               mot_de_passe:
+ *               role:
  *                 type: string
+ *                 enum: [admin, user]
  *     responses:
- *       200:
+ *       201:
  *         description: Utilisateur créé avec succès
  *       400:
- *         description: Champs obligatoires manquants ou email déjà existant
- *       500:
- *         description: Erreur interne du serveur
+ *         description: Erreur de validation ou utilisateur existant
  */
 router.post("/register", register);
 
@@ -46,7 +63,7 @@ router.post("/register", register);
  * /auth/login:
  *   post:
  *     summary: Connexion d'un utilisateur
- *     tags: [Utilisateurs]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -55,43 +72,52 @@ router.post("/register", register);
  *             type: object
  *             required:
  *               - email
- *               - password
+ *               - motDePasse
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
- *               password:
+ *               motDePasse:
  *                 type: string
  *     responses:
  *       200:
  *         description: Connexion réussie
- *       400:
- *         description: Champs obligatoires manquants
  *       401:
- *         description: Mot de passe invalide
- *       404:
- *         description: Utilisateur non trouvé
- *       500:
- *         description: Erreur interne du serveur
+ *         description: Identifiants invalides
  */
 router.post("/login", login);
 
 /**
  * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Déconnexion de l'utilisateur (JWT obligatoire)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Déconnexion réussie
+ *       401:
+ *         description: Utilisateur non authentifié
+ */
+router.post("/logout", authMiddleware, logout);
+
+/**
+ * @swagger
  * /auth/update/{id}:
  *   put:
- *     summary: Met à jour un utilisateur existant
- *     description: Met à jour les informations d'un utilisateur avec l'ID spécifié.
- *     tags:[Utilisateurs]
+ *     summary: Mettre à jour un utilisateur
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
- *         description: ID de l'utilisateur à mettre à jour
  *         schema:
  *           type: integer
+ *         required: true
+ *         description: ID de l'utilisateur
  *     requestBody:
- *       required: true
  *       content:
  *         application/json:
  *           schema:
@@ -99,104 +125,73 @@ router.post("/login", login);
  *             properties:
  *               nom:
  *                 type: string
- *                 example: "Dupont"
  *               prenom:
  *                 type: string
- *                 example: "Jean"
  *               email:
  *                 type: string
- *                 format: email
- *                 example: "jean.dupont@example.com"
  *               telephone:
  *                 type: string
- *                 example: "+33612345678"
- *               mot_de_passe:
- *                 type: string
- *                 description: "Nouveau mot de passe (optionnel)"
- *                 example: "motdepasse123"
  *     responses:
  *       200:
- *         description: Utilisateur mis à jour avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Utilisateur mis à jour avec succès"
+ *         description: Utilisateur mis à jour
  *       404:
  *         description: Utilisateur non trouvé
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Utilisateur non trouvé"
- *       500:
- *         description: Erreur serveur
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Erreur serveur"
- *                 error:
- *                   type: string
  */
-router.put("/update/:id", updateUser);
+router.put("/update/:id", authMiddleware, update);
 
 /**
  * @swagger
- * /auth/delete/{email}:
+ * /auth/delete/{id}:
  *   delete:
- *     summary: Suppression d'un utilisateur
- *     tags: [Utilisateurs]
+ *     summary: Supprimer un utilisateur
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: email
- *         required: true
+ *         name: id
  *         schema:
- *           type: string
- *           format: email
+ *           type: integer
+ *         required: true
+ *         description: ID de l'utilisateur à supprimer
  *     responses:
  *       200:
- *         description: Utilisateur supprimé avec succès
+ *         description: Utilisateur supprimé
  *       404:
  *         description: Utilisateur non trouvé
- *       500:
- *         description: Erreur interne du serveur
  */
-router.delete("/delete/:id", deleteUser);
+router.delete("/delete/:id", authMiddleware, deleteUser);
 
 /**
  * @swagger
  * /auth/list:
  *   get:
- *     summary: Récupération de la liste des utilisateurs
- *     tags: [Utilisateurs]
+ *     summary: Récupérer tous les utilisateurs
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Liste des utilisateurs
- *       500:
- *         description: Erreur interne du serveur
+ *       401:
+ *         description: Non autorisé
  */
-router.get("/list", getAllUsers);
+router.get("/list", authMiddleware, getAll);
 
 /**
  * @swagger
- * /auth/logout:
- *   post:
- *     summary: Déconnexion de l'utilisateur
- *     tags: [Utilisateurs]
+ * /auth/me:
+ *   get:
+ *     summary: Récupérer les informations de l'utilisateur connecté
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Déconnexion réussie
+ *         description: Données de l'utilisateur connecté
+ *       401:
+ *         description: Non authentifié
  */
-router.post("/logout", logout);
+router.get("/me", authMiddleware, getById);
 
 export default router;

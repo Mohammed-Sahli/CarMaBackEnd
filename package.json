@@ -1,6 +1,7 @@
 {
   "name": "carma",
   "version": "1.0.0",
+  "description": "Car Management application",
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.ts --legacy-watch",
@@ -8,9 +9,9 @@
   },
   "author": "Mohammed SAHLI",
   "license": "ISC",
-  "description": "Car Management application",
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -22,7 +23,7 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.6",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui": "^5.20.2",
+    "swagger-ui": "^5.26.2",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {

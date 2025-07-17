@@ -1,9 +1,7 @@
 import bcryptjs from 'bcryptjs'
 
 // Définition du nombre de "rounds" pour le salage des mots de passe.
-// Plus le nombre est élevé, plus le hachage sera sécurisé, mais il sera aussi plus lent.
 const saltRounds = 10;
-
 
 /**
  * Fonction pour hacher un mot de passe.
@@ -25,6 +23,5 @@ export async function hashPassword(password: string): Promise<string> {
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
     //Compare le mot de passe brut avec le hachage en utilisant bcrypt.
-    //Retourne true si les deux correspondent, sinon false.
     return bcryptjs.compare(password, hash);
 }

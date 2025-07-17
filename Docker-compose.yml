@@ -1,7 +1,9 @@
+version: "3.8"
+
 services:
   api:
     build: .
-    container_name: carma_postgres
+    container_name: carma_api
     ports:
       - "3000:3000"
       - "9229:9229"
@@ -11,10 +13,10 @@ services:
       - postgres
     volumes:
       - ./src:/app/src
-      - /app/node_modules # Empêche le partage des node_modules entre hôte et conteneur
+      - /app/node_modules # éviter le partage des node_modules entre hôte et conteneur
     environment:
       - NODE_ENV=development
-    command: npm run start
+    command: npm start
 
   postgres:
     image: postgres:latest
@@ -27,7 +29,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: carma
     volumes:
-      - postgres-data:/var/lib/postgresql/carma
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
   postgres-data:

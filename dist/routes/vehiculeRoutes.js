@@ -1,19 +1,11 @@
-import express from "express";
-import {
-  createVehicule,
-  deleteVehicule,
-  getAllVehicule,
-  updateVehicule,
-} from "../controllers/vehiculeControllers";
-
-import { validateRequest } from "../middlewares/validateRequest";
-import {
-  createVehiculeSchema,
-  updateVehiculeSchema,
-} from "../validators/vehiculeValidators";
-
-const router = express.Router();
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const vehiculeControllers_1 = require("../controllers/vehiculeControllers");
+const router = express_1.default.Router();
 /**
  * @swagger
  * /v/create:
@@ -61,12 +53,11 @@ const router = express.Router();
  *       500:
  *         description: Erreur interne du serveur
  */
-router.post("/create", validateRequest(createVehiculeSchema), createVehicule);
-
+router.post("/create", vehiculeControllers_1.createVehicule);
 /**
  * @swagger
  * /v/update/{id}:
- *   put:
+ *   post:
  *     summary: Mettre à jour un véhicule
  *     tags: [Véhicules]
  *     parameters:
@@ -91,8 +82,6 @@ router.post("/create", validateRequest(createVehiculeSchema), createVehicule);
  *                 type: number
  *               kilometrage_achat:
  *                 type: number
- *               dernier_kilometrage:
- *                 type: number
  *     responses:
  *       200:
  *         description: Véhicule mis à jour avec succès
@@ -101,12 +90,11 @@ router.post("/create", validateRequest(createVehiculeSchema), createVehicule);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/update/:id", validateRequest(updateVehiculeSchema), updateVehicule);
-
+router.post("/update/:id", vehiculeControllers_1.updateVehicule);
 /**
  * @swagger
  * /v/delete/{id}:
- *   delete:
+ *   post:
  *     summary: Supprimer un véhicule
  *     tags: [Véhicules]
  *     parameters:
@@ -123,8 +111,7 @@ router.put("/update/:id", validateRequest(updateVehiculeSchema), updateVehicule)
  *       500:
  *         description: Erreur serveur
  */
-router.delete("/delete/:id", deleteVehicule);
-
+router.post("/delete/:id", vehiculeControllers_1.deleteVehicule);
 /**
  * @swagger
  * /v/list:
@@ -137,6 +124,5 @@ router.delete("/delete/:id", deleteVehicule);
  *       500:
  *         description: Erreur serveur
  */
-router.get("/list", getAllVehicule);
-
-export default router;
+router.get("/list", vehiculeControllers_1.getAllVehicule);
+exports.default = router;
