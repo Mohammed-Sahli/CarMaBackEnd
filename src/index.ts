@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { testConnection } from './config/database';
-import { syncDatabase } from './models/syncModels';
+import syncDatabase from './models/syncModels';  // import par défaut corrigé
 import userRoutes from './routes/userRoutes';
 import vehiculeRoutes from './routes/vehiculeRoutes';
 import assuranceRoutes from './routes/assuranceRoutes';
@@ -49,7 +49,7 @@ app.use('*', (req, res) => {
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Erreur serveur :', err.stack || err);
-  res.status(500).json({ 
+  res.status(500).json({
     message: 'Erreur serveur interne',
     ...(process.env.NODE_ENV === 'development' ? { error: err.message } : {}),
   });

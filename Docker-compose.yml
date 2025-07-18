@@ -2,7 +2,10 @@ version: "3.8"
 
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: carmabackend-api:v1
     container_name: carma_api
     ports:
       - "3000:3000"
@@ -12,14 +15,14 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./src:/app/src
-      - /app/node_modules # éviter le partage des node_modules entre hôte et conteneur
+      - .:/app                    # ✅ on monte tout le projet
+      - /app/node_modules         # ✅ prévient les conflits node_modules (Windows)
     environment:
       - NODE_ENV=development
-    command: npm start
+    command: sh -c "sleep 5 && npm start"
 
   postgres:
-    image: postgres:latest
+    image: postgres:15
     container_name: postgres_carma_BDD
     restart: always
     ports:

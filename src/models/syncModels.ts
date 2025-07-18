@@ -1,22 +1,63 @@
-import sequelize from "../config/database";
-import Assurance from "./assuraneModels";
-import Consommable from "./consommableModels";
-import Controle from "./controleTechniqueModels";
-import Entrerep from "./entrerepModels";
-import Utilisateur from "./utilisateurModels";
-import Vehicule from "./vehiculeModels";
+import sequelize from '../config/database';
+import Utilisateur from './utilisateurModels';
+import Vehicule from './vehiculeModels';
+import Assurance from './assuraneModels';
+import ControleTechnique from './controleTechniqueModels';
+import Consommable from './consommableModels';
+import EntretienReparation from './entrerepModels';
 
 const syncDatabase = async () => {
-    
-try {
-    //alter: true Met à jour la structure automatiquement la structure de la base de données
-    //à utiliser sans options pour utiliser les migrations en production.
-    await sequelize.sync({ alter: true });
-    console.log("Base de données synchronisée");
-    
-} catch (error) {
-    console.error("Erreur lors de la synchronisation :", error);
-    }
+  // ✅ Un utilisateur a plusieurs véhicules
+  Utilisateur.hasMany(Vehicule, {
+    foreignKey: 'utilisateur_id',
+    as: 'vehicules',
+  });
+
+  // ✅ Assurance appartient à un véhicule
+  Assurance.belongsTo(Vehicule, {
+    foreignKey: 'vehicule_id',
+    as: 'vehiculeAssurance',
+  });
+
+  Vehicule.hasMany(Assurance, {
+    foreignKey: 'vehicule_id',
+    as: 'assurances',
+  });
+
+  // ✅ Contrôle technique appartient à un véhicule
+  ControleTechnique.belongsTo(Vehicule, {
+    foreignKey: 'vehicule_id',
+    as: 'vehiculeControle',
+  });
+
+  Vehicule.hasMany(ControleTechnique, {
+    foreignKey: 'vehicule_id',
+    as: 'controleTechniques',
+  });
+
+  // ✅ Consommable appartient à un véhicule
+  Consommable.belongsTo(Vehicule, {
+    foreignKey: 'vehicule_id',
+    as: 'vehiculeConsommable',
+  });
+
+  Vehicule.hasMany(Consommable, {
+    foreignKey: 'vehicule_id',
+    as: 'consommables',
+  });
+
+  // ✅ Entretien/Réparation appartient à un véhicule
+  EntretienReparation.belongsTo(Vehicule, {
+    foreignKey: 'vehicule_id',
+    as: 'vehiculeEntretien',
+  });
+
+  Vehicule.hasMany(EntretienReparation, {
+    foreignKey: 'vehicule_id',
+    as: 'entretienReparations',
+  });
+
+  await sequelize.sync({ alter: true });
 };
-   
-export { syncDatabase, Utilisateur, Vehicule, Assurance, Controle, Consommable, Entrerep };
+
+export default syncDatabase;

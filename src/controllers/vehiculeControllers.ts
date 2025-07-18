@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import Vehicule from "../models/vehiculeModels";
 import Utilisateur from "../models/utilisateurModels";
-import { Op } from "sequelize";
 
-// 🔧 Fonction utilitaire pour parser une date en toute sécurité
-function parseDate(input: any): Date | null {
-  if (!input) return null;
+// ✅ Fonction utilitaire corrigée pour ne pas retourner null
+function parseDate(input: any): Date | undefined {
+  if (!input) return undefined;
   const parsed = new Date(input);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  return isNaN(parsed.getTime()) ? undefined : parsed;
 }
 
 // =======================================================
@@ -34,7 +33,6 @@ export async function createVehicule(req: Request, res: Response) {
       });
     }
 
-    // Vérifie si l'utilisateur existe
     const utilisateur = await Utilisateur.findByPk(utilisateur_id);
     if (!utilisateur) {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
@@ -88,7 +86,6 @@ export async function updateVehicule(req: Request, res: Response) {
       kilometrage_achat,
     } = req.body;
 
-    // Si l'utilisateur change, vérifier qu'il existe
     if (utilisateur_id && utilisateur_id !== vehicule.utilisateur_id) {
       const utilisateur = await Utilisateur.findByPk(utilisateur_id);
       if (!utilisateur) {
@@ -103,8 +100,8 @@ export async function updateVehicule(req: Request, res: Response) {
       marque: marque ?? vehicule.marque,
       modele: modele ?? vehicule.modele,
       carburant: carburant ?? vehicule.carburant,
-      dmec: parseDate(dmec) ?? vehicule.dmec,
-      date_achat: parseDate(date_achat) ?? vehicule.date_achat,
+      dmec: parseDate(dmec),
+      date_achat: parseDate(date_achat),
       prix_achat: prix_achat ?? vehicule.prix_achat,
       kilometrage_achat: kilometrage_achat ?? vehicule.kilometrage_achat,
     });

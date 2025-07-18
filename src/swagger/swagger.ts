@@ -12,9 +12,47 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000/api",
+        url: "http://localhost:3000", // URL de base de ton API
       },
     ],
+    components: {
+      schemas: {
+        User: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            nom: {
+              type: "string",
+              example: "Dupont",
+            },
+            prenom: {
+              type: "string",
+              example: "Jean",
+            },
+            email: {
+              type: "string",
+              format: "email",
+              example: "jean.dupont@example.com",
+            },
+            role: {
+              type: "string",
+              example: "admin",
+            },
+          },
+          required: ["id", "nom", "prenom", "email", "role"],
+        },
+      },
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],
 };

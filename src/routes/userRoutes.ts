@@ -6,7 +6,7 @@ import {
   update,
   deleteUser,
   getAll,
-  getById,
+  getMe,
 } from "../controllers/userAuthControllers";
 import authMiddleware from "../middlewares/authMiddleware";
 
@@ -23,8 +23,9 @@ const router = express.Router();
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Enregistrement d'un nouvel utilisateur
- *     tags: [Auth]
+ *     summary: Création d'un nouvel utilisateur
+ *     tags:
+ *       [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -35,26 +36,38 @@ const router = express.Router();
  *               - nom
  *               - prenom
  *               - email
- *               - motDePasse
+ *               - role
+ *               - mot_de_passe
  *             properties:
  *               nom:
  *                 type: string
+ *                 example: Sahli
  *               prenom:
  *                 type: string
+ *                 example: Mohammed
  *               email:
  *                 type: string
- *               motDePasse:
- *                 type: string
- *               telephone:
- *                 type: string
+ *                 format: email
+ *                 example: mohammed.sahli@outlook.com
  *               role:
  *                 type: string
- *                 enum: [admin, user]
+ *                 example: admin
+ *               mot_de_passe:
+ *                 type: string
+ *                 example: mspwd
  *     responses:
  *       201:
  *         description: Utilisateur créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Erreur de validation ou utilisateur existant
+ *         description: Champs manquants
+ *       409:
+ *         description: Email déjà utilisé
+ *       500:
+ *         description: Erreur serveur interne
  */
 router.post("/register", register);
 
@@ -72,11 +85,11 @@ router.post("/register", register);
  *             type: object
  *             required:
  *               - email
- *               - motDePasse
+ *               - mot_de_passe
  *             properties:
  *               email:
  *                 type: string
- *               motDePasse:
+ *               mot_de_passe:
  *                 type: string
  *     responses:
  *       200:
@@ -192,6 +205,6 @@ router.get("/list", authMiddleware, getAll);
  *       401:
  *         description: Non authentifié
  */
-router.get("/me", authMiddleware, getById);
+router.get("/me", authMiddleware, getMe);
 
 export default router;
