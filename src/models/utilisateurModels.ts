@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import sequelize from "../config/database"; // ta config Sequelize
+import sequelize from "../config/database";
 
-// Définition des attributs du modèle Utilisateur
 interface UtilisateurAttributes {
   id: number;
   nom: string;
@@ -13,7 +12,6 @@ interface UtilisateurAttributes {
   resetPasswordExpires?: Date | null;
 }
 
-// Pour la création, certains champs sont optionnels (id, reset token)
 interface UtilisateurCreationAttributes extends Optional<UtilisateurAttributes, "id" | "resetPasswordToken" | "resetPasswordExpires"> {}
 
 class Utilisateur extends Model<UtilisateurAttributes, UtilisateurCreationAttributes> implements UtilisateurAttributes {
@@ -49,6 +47,9 @@ Utilisateur.init(
       type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     mot_de_passe: {
       type: DataTypes.STRING,

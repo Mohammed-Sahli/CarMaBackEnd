@@ -1,17 +1,10 @@
 import { Request, Response } from "express";
 import Utilisateur from "../models/utilisateurModels";
 import Vehicule from "../models/vehiculeModels";
-import Assurance from "../models/assuraneModels";
+import Assurance from "../models/assuranceModels";
 import Controle from "../models/controleTechniqueModels";   
 import Consommable from "../models/consommableModels";
 import Entrerep from "../models/entrerepModels";
-
-//Liste des véhicules par utilisateur
-
-
-// Définition de la relation entre les modèles
-Utilisateur.hasMany(Vehicule, { foreignKey: "utilisateur_id" });
-Vehicule.belongsTo(Utilisateur, { foreignKey: "utilisateur_id" });
 
 // Contrôleur pour récupérer les véhicules classés par utilisateur
 export const vehiculesParUtilisateur = async (req: Request, res: Response) => {
@@ -20,6 +13,7 @@ export const vehiculesParUtilisateur = async (req: Request, res: Response) => {
             include: [
                 {
                     model: Vehicule,
+                    as: "vehicules",
                     required: false, // Permet d'afficher même les utilisateurs sans véhicules
                 },
             ],
@@ -33,11 +27,11 @@ export const vehiculesParUtilisateur = async (req: Request, res: Response) => {
     }
 };
 
-//Informations et historiques par véhicule
+// Informations et historiques par véhicule
 export const vehiculeDetails = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        console.log("===DEBUT=======" ,id)
+        console.log("===DEBUT=======", id)
         // Récupération des informations du véhicule avec toutes ses associations
         const vehicule = await Vehicule.findByPk(id, {
             include: [
@@ -48,7 +42,7 @@ export const vehiculeDetails = async (req: Request, res: Response) => {
                 },
                 {
                     model: Controle,
-                    as: "controles",
+                    as: "controleTechniques",
                     attributes: ["id", "date_controle", "kilometrage_controle", "controleur", "resultat", "cout", "prochain_controle", "facture", "observation"]
                 },
                 {
@@ -58,13 +52,12 @@ export const vehiculeDetails = async (req: Request, res: Response) => {
                 },
                 {
                     model: Entrerep,
-                    as: "entretiensReparations",
+                    as: "entretienReparations",
                     attributes: ["id", "type_entrerep", "date_entrerep", "garage", "cout", "kilometrage", "facture", "observation"]
                 }
-                
             ]
         });
-        console.log("===FIN=======" ,id);
+        console.log("===FIN=======", id);
         if (!vehicule) {
             res.status(404).json({ message: "Véhicule non trouvé" });
             return;
@@ -76,5 +69,3 @@ export const vehiculeDetails = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
-
-//Liste des rappels "To Do"

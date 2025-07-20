@@ -1,19 +1,18 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
-import Utilisateur from "./utilisateurModels";
 
 interface VehiculeAttributes {
   id: number;
   immat: string;
   numero_chassis: string;
   utilisateur_id: number;
-  marque?: string;
-  modele?: string;
-  carburant?: string;
+  marque?: string | null;
+  modele?: string | null;
+  carburant?: string | null;
   dmec?: Date | null;
   date_achat?: Date | null;
-  prix_achat?: number;
-  kilometrage_achat?: number;
+  prix_achat?: number | null;
+  kilometrage_achat?: number | null;
 }
 
 interface VehiculeCreationAttributes extends Optional<VehiculeAttributes, "id"> {}
@@ -23,19 +22,22 @@ class Vehicule extends Model<VehiculeAttributes, VehiculeCreationAttributes> imp
   public immat!: string;
   public numero_chassis!: string;
   public utilisateur_id!: number;
-  public marque?: string;
-  public modele?: string;
-  public carburant?: string;
-  public dmec?: Date | null;
-  public date_achat?: Date | null;
-  public prix_achat?: number;
-  public kilometrage_achat?: number;
+  public marque!: string | null;
+  public modele!: string | null;
+  public carburant!: string | null;
+  public dmec!: Date | null;
+  public date_achat!: Date | null;
+  public prix_achat!: number | null;
+  public kilometrage_achat!: number | null;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 Vehicule.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
     },
@@ -50,17 +52,20 @@ Vehicule.init(
       unique: true,
     },
     utilisateur_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
     marque: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     modele: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     carburant: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     dmec: {
       type: DataTypes.DATE,
@@ -72,21 +77,19 @@ Vehicule.init(
     },
     prix_achat: {
       type: DataTypes.FLOAT,
+      allowNull: true,
     },
     kilometrage_achat: {
       type: DataTypes.INTEGER,
+      allowNull: true,
     },
   },
   {
     sequelize,
     modelName: "Vehicule",
     tableName: "vehicules",
+    timestamps: true,
   }
 );
-
-Vehicule.belongsTo(Utilisateur, {
-  foreignKey: "utilisateur_id",
-  as: "utilisateur",
-});
 
 export default Vehicule;

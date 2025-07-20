@@ -1,16 +1,16 @@
-import { Sequelize, DataTypes, Model } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database";
 
 interface ConsommableAttributes {
   id?: number;
-  vehicule_id?: number;
-  type_consommable?: string;
-  date_achat?: Date;
-  kilometrage_achat?: number;
-  quantite?: number;
+  vehicule_id: number;
+  type_consommable: string;
+  date_achat: Date;
+  kilometrage_achat: number;
+  quantite: number;
   cout?: number;
-  facture?: Buffer;
-  observation?: string;
+  facture?: Buffer | null;
+  observation?: string | null;
 }
 
 class Consommable extends Model<ConsommableAttributes> implements ConsommableAttributes {
@@ -21,30 +21,60 @@ class Consommable extends Model<ConsommableAttributes> implements ConsommableAtt
   public kilometrage_achat!: number;
   public quantite!: number;
   public cout!: number;
-  public facture!: Buffer;
-  public observation!: string;
+  public facture!: Buffer | null;
+  public observation!: string | null;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 Consommable.init(
   {
-    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     vehicule_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "vehicules", key: "id" },
+      references: {
+        model: "vehicules",
+        key: "id",
+      },
     },
-    type_consommable: { type: DataTypes.STRING, allowNull: false },
-    date_achat: { type: DataTypes.DATE, allowNull: false },
-    kilometrage_achat: { type: DataTypes.INTEGER, allowNull: false },
-    quantite: { type: DataTypes.INTEGER, allowNull: false },
+    type_consommable: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date_achat: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    kilometrage_achat: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    quantite: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     cout: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0.0,
-      validate: { min: 0.0 },
+      validate: {
+        min: 0.0,
+      },
     },
-    facture: { type: DataTypes.BLOB("long"), allowNull: true },
-    observation: { type: DataTypes.STRING, allowNull: true },
+    facture: {
+      type: DataTypes.BLOB("long"),
+      allowNull: true,
+    },
+    observation: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,

@@ -1,16 +1,16 @@
-import { Sequelize, DataTypes, Model } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database";
 
 interface EntrerepAttributes {
   id?: number;
-  vehicule_id?: number;
-  type_entrerep?: string;
-  date_entrerep?: Date;
-  garage?: string;
+  vehicule_id: number;
+  type_entrerep: string;
+  date_entrerep: Date;
+  garage: string;
   cout?: number;
-  kilometrage?: number;
-  facture?: Buffer;
-  observation?: string;
+  kilometrage: number;
+  facture?: Buffer | null;
+  observation?: string | null;
 }
 
 class Entrerep extends Model<EntrerepAttributes> implements EntrerepAttributes {
@@ -21,30 +21,60 @@ class Entrerep extends Model<EntrerepAttributes> implements EntrerepAttributes {
   public garage!: string;
   public cout!: number;
   public kilometrage!: number;
-  public facture!: Buffer;
-  public observation!: string;
+  public facture!: Buffer | null;
+  public observation!: string | null;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 Entrerep.init(
   {
-    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     vehicule_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "vehicules", key: "id" },
+      references: {
+        model: "vehicules",
+        key: "id",
+      },
     },
-    type_entrerep: { type: DataTypes.STRING(50), allowNull: false },
-    date_entrerep: { type: DataTypes.DATE, allowNull: false },
-    garage: { type: DataTypes.STRING, allowNull: false },
+    type_entrerep: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    date_entrerep: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    garage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     cout: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0.0,
-      validate: { min: 0.0 },
+      validate: {
+        min: 0.0,
+      },
     },
-    kilometrage: { type: DataTypes.INTEGER, allowNull: false },
-    facture: { type: DataTypes.BLOB("long"), allowNull: true },
-    observation: { type: DataTypes.STRING, allowNull: true },
+    kilometrage: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    facture: {
+      type: DataTypes.BLOB("long"),
+      allowNull: true,
+    },
+    observation: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,
